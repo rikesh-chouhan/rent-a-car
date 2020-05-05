@@ -1,5 +1,8 @@
 package rent.a.car.service;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,7 +13,7 @@ import rent.a.car.IdGenerator;
 import rent.a.car.model.Car;
 import rent.a.car.model.SizeType;
 
-public class CarService {
+public class CarService implements Service {
 
     private int maxSmallCars;
     private int maxMediumCars;
@@ -18,9 +21,15 @@ public class CarService {
     private AtomicInteger availableSmallCars;
     private AtomicInteger availableMediumCars;
     private AtomicInteger availableLargeCars;
+    @Inject
+    @Named("IdGenerator")
     private IdGenerator idGenerator;
 
-    public CarService(IdGenerator idGenerator) {
+    public CarService() {
+
+    }
+
+    void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator;
     }
 

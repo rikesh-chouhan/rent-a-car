@@ -18,7 +18,8 @@ class ReservationServiceTest {
 
     @BeforeEach
     public void setup() {
-        underTest = new ReservationService(() -> theId);
+        underTest = new ReservationService();
+        underTest.setIdGenerator(() -> theId);
     }
 
     @Test

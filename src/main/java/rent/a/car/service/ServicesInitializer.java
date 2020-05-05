@@ -1,5 +1,8 @@
 package rent.a.car.service;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import java.util.Properties;
 
 import rent.a.car.Util;
@@ -10,15 +13,15 @@ import static rent.a.car.Constants.LARGE_CARS_KEY;
 import static rent.a.car.Constants.MEDIUM_CARS_KEY;
 import static rent.a.car.Constants.SMALL_CARS_KEY;
 
-public class ServiceFactory {
+public class ServicesInitializer {
 
+    @Inject @Named("ReservationService")
     private ReservationService reservationService;
+    @Inject @Named("CarService")
     private CarService carService;
     private boolean servicesInitialized = false;
 
-    public ServiceFactory(Util util) {
-        reservationService = new ReservationService(util);
-        carService = new CarService(util);
+    public ServicesInitializer() {
     }
 
     public synchronized void initServices(Properties initProperties) {

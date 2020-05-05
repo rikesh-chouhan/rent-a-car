@@ -1,13 +1,14 @@
 package rent.a.car.service;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import rent.a.car.DateAndTimeFormatter;
 import rent.a.car.IdGenerator;
 import rent.a.car.model.Car;
 import rent.a.car.model.Reservation;
@@ -15,13 +16,17 @@ import rent.a.car.model.Reservation;
 /**
  * This service allows creation and deletion of a Reservation
  */
-public class ReservationService {
+public class ReservationService implements Service {
 
     private List<Reservation> reservationList;
+    @Inject @Named("IdGenerator")
     private IdGenerator idGenerator;
 
-    public ReservationService(IdGenerator idGenerator) {
+    public ReservationService() {
         reservationList = new ArrayList<>();
+    }
+
+    void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator;
     }
 

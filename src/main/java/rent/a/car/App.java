@@ -3,6 +3,11 @@
  */
 package rent.a.car;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.name.Named;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -14,7 +19,7 @@ import java.util.Scanner;
 
 import rent.a.car.model.BookingSlot;
 import rent.a.car.service.CarService;
-import rent.a.car.service.ServiceFactory;
+import rent.a.car.service.ServicesInitializer;
 
 import static rent.a.car.Constants.DATE_FORMAT;
 import static rent.a.car.Constants.TIME_FORMAT;
@@ -22,12 +27,12 @@ import static rent.a.car.Constants.YES;
 
 public class App {
 
-    ServiceFactory serviceFactory;
+    @Inject @Named("ServicesInitializer")
+    ServicesInitializer servicesInitializer;
+    @Inject @Named("Util")
     Util util;
 
     public App() {
-        util = new Util();
-        serviceFactory = new ServiceFactory(util);
     }
 
     public String appStarted() {
@@ -36,7 +41,9 @@ public class App {
 
     public static void main(String[] args) {
         InputStream inputStream = App.class.getResourceAsStream("/initialization.properties");
-        App app = new App();
+        Injector injector = Guice.createInjector(new UtilModule(), new ServiceModule());
+        App app = injector.getInstance(App.class);
+        // App app = new App();
         try {
             app.loadConfig(inputStream);
             System.out.println(app.appStarted());
@@ -45,13 +52,13 @@ public class App {
             e.printStackTrace();
             app.loadDefaults();
         }
-        app.serviceFactory.getCarService().print();
+        app.servicesInitializer.getCarService().print();
     }
 
     private void reserveCars() {
         boolean keepRunning = true;
         try (Scanner scanner = new Scanner(System.in)) {
-            CarService carService = serviceFactory.getCarService();
+            CarService carService = servicesInitializer.getCarService();
             while (keepRunning) {
                 System.out.print("Would you like to Rent a car?");
                 String answer = scanner.nextLine();
@@ -122,11 +129,11 @@ public class App {
     private void loadConfig(InputStream inputStream) throws IOException {
         Properties properties = new Properties();
         properties.load(inputStream);
-        serviceFactory.initServices(properties);
+        servicesInitializer.initServices(properties);
     }
 
     private void loadDefaults() {
-        serviceFactory.initDefaults();
+        servicesInitializer.initDefaults();
     }
 
 }

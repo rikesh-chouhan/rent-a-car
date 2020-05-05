@@ -22,7 +22,9 @@ class CarServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new CarService(() -> theId);
+        underTest = new CarService();
+        underTest.setIdGenerator(() -> theId);
+        //underTest = new CarService(() -> theId);
     }
 
     @Test
